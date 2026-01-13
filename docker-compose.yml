@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  segmentation:
+    build:
+      context: ./services/segmentation
+    image: cw-segmentation:gpu
+    container_name: cw-segmentation
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+    environment:
+      - PYTHONUNBUFFERED=1
+    # For non-swarm compose with recent Docker, you can also run with:
+    # docker compose run --gpus all segmentation

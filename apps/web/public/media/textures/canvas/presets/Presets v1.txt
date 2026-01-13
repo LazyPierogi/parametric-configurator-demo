@@ -1,0 +1,164 @@
+Materials
+{
+  "presetGroup": "material",
+  "material": "sheer-basic",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "opacity": 0.83,
+  "noiseStrength": 0.02,
+  "textureAsset": "sheer-weave",
+  "transmission": 0.05,
+  "shadowGain": 1,
+  "highlightClamp": 1,
+  "specBoost": 0.65,
+  "weaveScale": 1.7,
+  "weaveStrength": 0.55
+}
+
+{
+  "presetGroup": "material",
+  "material": "sheer-linen",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "opacity": 0.71,
+  "noiseStrength": 0,
+  "textureAsset": "sheer-weave",
+  "transmission": 0.15,
+  "shadowGain": 0.65,
+  "highlightClamp": 1,
+  "specBoost": 0.8,
+  "weaveScale": 1.2,
+  "weaveStrength": 0.5
+}
+
+{
+  "presetGroup": "material",
+  "material": "curtain-basic",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "opacity": 0.97,
+  "noiseStrength": 0.01,
+  "textureAsset": "sheer-weave",
+  "transmission": 0,
+  "shadowGain": 0,
+  "highlightClamp": 1,
+  "specBoost": 0.55,
+  "weaveScale": 1.6,
+  "weaveStrength": 0.05
+}
+
+{
+  "presetGroup": "material",
+  "material": "curtain-linen",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "opacity": 0.95,
+  "noiseStrength": 0.01,
+  "textureAsset": "sheer-weave",
+  "transmission": 0.05,
+  "shadowGain": 1,
+  "highlightClamp": 1,
+  "specBoost": 0.4,
+  "weaveScale": 1.2,
+  "weaveStrength": 0.25
+}
+
+
+Colors
+
+{
+  "presetGroup": "color",
+  "material": "sheer-linen",
+  "colorGroup": "dark",
+  "pleatId": "wave",
+  "shadowStrength": 0,
+  "occlusionStrength": 0,
+  "contrastBoost": 0.2
+}
+
+{
+  "presetGroup": "color",
+  "material": "sheer-linen",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "shadowStrength": 1,
+  "occlusionStrength": 0,
+  "contrastBoost": 0
+}
+
+{
+  "presetGroup": "color",
+  "material": "curtain-linen",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "shadowStrength": 0,
+  "occlusionStrength": 0.6,
+  "contrastBoost": 0.04
+}
+
+{
+  "presetGroup": "color",
+  "material": "curtain-basic",
+  "colorGroup": "dark",
+  "pleatId": "wave",
+  "shadowStrength": 0.25,
+  "occlusionStrength": 1,
+  "contrastBoost": 0.11
+}
+
+
+Waves
+
+{
+  "presetGroup": "pleating",
+  "material": "sheer-basic",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "tileWidthPx": 240,
+  "heightStrength": 0.25
+}
+
+{
+  "presetGroup": "pleating",
+  "material": "sheer-basic",
+  "colorGroup": "bright",
+  "pleatId": "flex",
+  "tileWidthPx": 160,
+  "heightStrength": 0.15
+}
+
+{
+  "presetGroup": "pleating",
+  "material": "sheer-basic",
+  "colorGroup": "bright",
+  "pleatId": "doubleFlex",
+  "tileWidthPx": 180,
+  "heightStrength": 0.25
+}
+
+{
+  "presetGroup": "pleating",
+  "material": "curtain-basic",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "tileWidthPx": 180,
+  "heightStrength": 0.25
+}
+
+{
+  "presetGroup": "pleating",
+  "material": "curtain-basic",
+  "colorGroup": "bright",
+  "pleatId": "flex",
+  "tileWidthPx": 200,
+  "heightStrength": 0.1
+}
+
+{
+  "presetGroup": "pleating",
+  "material": "curtain-basic",
+  "colorGroup": "bright",
+  "pleatId": "doubleFlex",
+  "tileWidthPx": 160,
+  "heightStrength": 0.15
+}

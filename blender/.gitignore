@@ -1,0 +1,11 @@
+# Blender runtime files
+*.blend1
+*.blend2
+*.blend@
+__pycache__/
+
+# Baked outputs (generated)
+baked_maps/
+
+# Temp exports
+*.zip

@@ -1,0 +1,10 @@
+{
+  "handleBg": "#fafafb",
+  "borderHex": "#fafafb",
+  "borderOpacity": 1,
+  "handleOpacity": 0.55,
+  "ringHex": "#fafafb",
+  "ringOpacity": 1,
+  "wallStroke": "#fafafb",
+  "wallStrokeOpacity": 0.45
+}

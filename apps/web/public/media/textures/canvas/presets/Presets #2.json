@@ -1,0 +1,100 @@
+Presets #2
+
+{
+  "presetGroup": "material",
+  "material": "curtain-linen",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "opacity": 0.98,
+  "noiseStrength": 0,
+  "textureAsset": "sheer-weave",
+  "transmission": 0.05,
+  "shadowGain": 0,
+  "highlightClamp": 1,
+  "specBoost": 0.05,
+  "weaveScale": 1.6,
+  "weaveStrength": 0.25
+}
+
+{
+  "presetGroup": "material",
+  "material": "curtain-linen",
+  "colorGroup": "dark",
+  "pleatId": "wave",
+  "opacity": 0.98,
+  "noiseStrength": 0.01,
+  "textureAsset": "sheer-weave",
+  "transmission": 0.05,
+  "shadowGain": 0.25,
+  "highlightClamp": 1,
+  "specBoost": 0.05,
+  "weaveScale": 1.2,
+  "weaveStrength": 0.35
+}
+
+{
+  "presetGroup": "material",
+  "material": "sheer-linen",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "opacity": 0.95,
+  "noiseStrength": 0.03,
+  "textureAsset": "sheer-weave",
+  "transmission": 0.1,
+  "shadowGain": 1,
+  "highlightClamp": 1,
+  "specBoost": 0.3,
+  "weaveScale": 1.9,
+  "weaveStrength": 0.2
+}
+
+{
+  "presetGroup": "material",
+  "material": "sheer-basic",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "opacity": 0.95,
+  "noiseStrength": 0.02,
+  "textureAsset": "sheer-weave",
+  "transmission": 0.07,
+  "shadowGain": 0.7,
+  "highlightClamp": 1,
+  "specBoost": 0.65,
+  "weaveScale": 0.9,
+  "weaveStrength": 0.25
+}
+
+{
+  "presetGroup": "color",
+  "material": "sheer-basic",
+  "colorGroup": "bright",
+  "pleatId": "wave",
+  "shadowStrength": 0.8,
+  "occlusionStrength": 0.2,
+  "contrastBoost": 0.04
+}
+
+{
+  "presetGroup": "material",
+  "material": "sheer-linen",
+  "colorGroup": "dark",
+  "pleatId": "wave",
+  "opacity": 0.95,
+  "noiseStrength": 0,
+  "textureAsset": "sheer-weave",
+  "transmission": 0.1,
+  "shadowGain": 0,
+  "highlightClamp": 1,
+  "specBoost": 0.04,
+  "weaveScale": 1.8,
+  "weaveStrength": 0.3
+}
+
+{
+  "presetGroup": "pleating",
+  "material": "sheer-linen",
+  "colorGroup": "dark",
+  "pleatId": "wave",
+  "tileWidthPx": 220,
+  "heightStrength": 0.35
+}

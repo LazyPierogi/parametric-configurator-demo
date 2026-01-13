@@ -1,0 +1,5 @@
+{
+    "require": {
+        "softcreatr/php-perplexity-ai-sdk": "^2.0"
+    }
+}

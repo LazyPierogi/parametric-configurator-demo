@@ -1,0 +1,22 @@
+{
+  "file": "scianas.jpg",
+  "source": "/Users/mario/Repo/Curtain Wizard/public/originals/scianas.jpg",
+  "provider": "noreref",
+  "mode": null,
+  "wallWidthCm": 588.8,
+  "wallHeightCm": 258.1,
+  "pxPerCm": null,
+  "axisEstimate": null,
+  "rectifiedBoundsCm": null,
+  "trimPercentile": null,
+  "sheet": null,
+  "a4Mask": null,
+  "clamp": null,
+  "a4Candidates": null,
+  "confidencePct": 55,
+  "warnings": [
+    "Floor and ceiling bands overlapped; using gradient fallback.",
+    "Wall mask touches image edges - measurement may include side walls",
+    "No EXIF focal length – assuming 60° field of view."
+  ]
+}

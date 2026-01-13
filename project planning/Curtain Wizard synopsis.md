@@ -1,0 +1,7 @@
+# Curtain Wizard synopsis
+
+An application (mobile + web) that will allow users to measure, choose, and order curtains for their home in the simplest way possible. Problem: Ordering curtains is troublesome, requiring manual measurements, phone calls or meetings with contractors, price quotes, and long waiting times for the final result.
+
+Solution: AI-powered configurator that will measure the room from a photo, enable material selection (manual selection or suggestions in specific styles), and the user will receive an instant realistic visual preview of curtains generated on the actual photo of the user's home. The user can easily edit curtain attachment points (drag-and-drop), and the system dynamically updates dimensions, price, and ordering of curtains (as well as additional services like styling advice, precise measurements with on-site visits, paid installation, curtain rods, etc.) from the contractor in just a few clicks.
+
+Initially, we will handle the curtain production ourselves (we already have an operational business), but there is potential to scale to other cities in Poland through cooperation with other entities and B2B scaling (licensing the configurator to other entities in other countries).

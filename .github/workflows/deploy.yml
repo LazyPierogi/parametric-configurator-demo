@@ -1,0 +1,80 @@
+name: Build (and optional Deploy)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+      DEPLOY_APP_ROOT: ${{ secrets.DEPLOY_APP_ROOT }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate deploy secrets
+        run: |
+          set -euo pipefail
+          missing=0
+          for k in DEPLOY_HOST DEPLOY_USERNAME DEPLOY_SSH_KEY DEPLOY_PORT DEPLOY_APP_ROOT; do
+            if [ -z "${!k:-}" ]; then
+              echo "::warning::Missing required secret: $k"
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo "Skipping deploy (public demo repo without secrets configured)."
+            exit 0
+          fi
+
+      - name: Post-deployment tasks
+        uses: appleboy/ssh-action@v1.2.3
+        if: ${{ env.DEPLOY_HOST != '' }}
+        with:
+          host: ${{ env.DEPLOY_HOST }}
+          username: ${{ env.DEPLOY_USERNAME }}
+          key: ${{ env.DEPLOY_SSH_KEY }}
+          port: ${{ env.DEPLOY_PORT }}
+          script: |
+            set -euo pipefail
+
+            APP_ROOT="${{ env.DEPLOY_APP_ROOT }}"
+
+            cd "$APP_ROOT"
+            git remote set-url origin "git@github.com:${{ github.repository }}.git"
+            git pull &&
+            npm install &&
+            npm run build &&
+            pm2 restart all

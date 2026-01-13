@@ -1,0 +1,101 @@
+# Node/Next
+node_modules/
+.next/
+.turbo/
+dist/
+build/
+vendor/
+public/logs/
+
+# Env files
+.env
+.env.local
+*.env.local
+apps/web/.env.local
+apps/web/.env.production
+
+# Python
+__pycache__/
+.pytest_cache/
+*.pyc
+*.pyo
+*.pyd
+.cache/
+.venv/
+**/.venv/
+
+# OS/IDE
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+.windsurf/
+
+# Misc
+*.tmp
+*.swp
+*.swo
+tmp/**/*.heic
+tmp/**/*.heif
+tmp/**/*.jpg
+tmp/**/*.jpeg
+
+# Debug
+measure-debug/
+
+# Blender working files
+*.blend
+*.blend1
+*.blend2
+*.blend*
+
+# Baked output (duże pliki PNG - delivery via separate channel)
+baked_maps/
+
+# Blender autosave
+*.blend~
+*.blend*~
+
+# Blender temp files
+*.autosave
+*.crash.txt
+
+# macOS
+.DS_Store
+
+# Thumbnails
+*.thumb
+*.png.thumb
+
+# Render output (if testing)
+render_output/
+*.exr
+*.hdr
+
+# Cache
+__pycache__/
+*.pyc
+
+# Keep scripts & documentation
+!*.py
+!*.md
+!README.md
+
+# SSH keys - NEVER commit
+deploy-server.txt
+deploy-server.pub
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+apps/web/next-env.d.ts
+
+# Allow README assets
+!docs/images/**
+!docs/gifs/**
+!docs/images/**/*.png
+!docs/gifs/**/*.gif

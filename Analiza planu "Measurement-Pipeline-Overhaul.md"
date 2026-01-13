@@ -1,0 +1,391 @@
+# Analiza planu "Measurement-Pipeline-Overhaul.md"
+
+# Feedback 1
+
+Przeanalizowałem dokument i porównałem go z istniejącą architekturą. Oto moja ocena:
+
+## ✅ Mocne strony planu
+
+### 1. **Jedno źródło prawdy (Etap 1)**
+- **Doskonałe rozwiązanie**: eliminacja chaotycznego wielokrotnego pomiaru (meas#1/2/3) to kluczowa poprawa
+- Spójne z [NEW-FLOW-PLAN.md](cci:7://file:///Users/mario/Repo/Curtain%20Wizard/project%20planning/NEW-FLOW-PLAN.md:0:0-0:0) Milestone C
+- Measurement cache z kluczem `signature::polyHash` zapewnia stabilność
+
+### 2. **Fallback polygon → maska (Etap 2)**
+- **Bardzo dobry kierunek**: obecny system ma problem z `mask:missing_or_rejected` → pełna ściana
+- Używanie `fracPoly` jako fallbacku jest sensowne i deterministyczne
+- Zachowuje mask-first approach tam gdzie działa, polygon-based tam gdzie maska zawodzi
+
+### 3. **Struktura etapowa**
+- Separacja measurement → geometry → provider → UX to prawidłowa kolejność
+- Każdy etap ma jasne dependency i ASCII-diagramy
+
+## ⚠️ Ryzyka i potencjalne problemy
+
+### 1. **Etap 3: Provider strategy zbyt ambitna**
+
+```text
+Problem: Plan zakłada 3 równoległe providery (noreref/Qwen/VLM) + hybrid fallback
+```
+
+**Konflikt z NEW-FLOW-PLAN.md:**
+- [NEW-FLOW-PLAN.md](cci:7://file:///Users/mario/Repo/Curtain%20Wizard/project%20planning/NEW-FLOW-PLAN.md:0:0-0:0) (lines 36-44) już ustala: **Qwen = canonical wall-first**, VLM = polygon specialists
+- Obecna implementacja już ma Qwen wall×bbox scaling (line 67-69 NEW-FLOW-PLAN)
+- **Recommendation**: Etap 3 powinien być prostszy — zaimplementować TYLKO przełącznik `AI1_PROVIDER=qwen|googleai|openai`, bez równoległego uruchamiania wszystkich
+
+### 2. **Etap 1: Brak pomiaru w /estimate może zablokować UX**
+
+```text
+Plan (line 67-68): "/estimate upload TYLKO segmentuje, nie robi /api/measure"
+```
+
+**Problem**:
+- Użytkownik musi narysować polygon ZANIM zobaczy wymiary
+- Co jeśli polygon jest źle narysowany? Będzie musiał wracać do /estimate
+- W obecnej implementacji mamy "measure while drawing" dla lepszego feedback loop
+
+**Recommendation**: 
+- Zachować measurement w `/estimate` po narysowaniu polygona (jak jest teraz)
+- Ale **nie uruchamiać** measurement bez polygona (to się zgadza z planem)
+
+### 3. **Etap 4: UX gating może być zbyt restrykcyjny**
+
+```text
+Plan (line 217-219): Modal otwieramy DOPIERO gdy measurement ORAZ segmentacja ready
+```
+
+**Problem**:
+- Segmentacja może trwać długo (especially HF fallback)
+- Blokowanie użytkownika na measurement+segmentation zwiększa opóźnienie
+- [NEW-FLOW-PLAN.md](cci:7://file:///Users/mario/Repo/Curtain%20Wizard/project%20planning/NEW-FLOW-PLAN.md:0:0-0:0) line 93-94 mówi: "segmentation runs in parallel and does not block interaction"
+
+**Recommendation**:
+- Pokazuj modal z wymiarami gdy measurement ready
+- Segmentacja niech trwa w tle, ale disable CTA dopóki nie skończy
+- Komunikuj jasno: "Analyzing wall... You can review dimensions while we work"
+
+### 4. **Etap 5: Benchmark może być przedwczesny**
+
+```text
+Plan (line 253-294): Benchmark z ≥20 zdjęć, porównanie noreref vs Qwen
+```
+
+**Problem**:
+- W [NEW-FLOW-PLAN.md](cci:7://file:///Users/mario/Repo/Curtain%20Wizard/project%20planning/NEW-FLOW-PLAN.md:0:0-0:0) (line 161-165) jest już accuracy mitigation strategy
+- Benchmark powinien przyjść PRZED Milestone D (rollout), nie jako osobny etap
+- Ground truth collection to osobny effort (patrz `900-Accuracy-Quick-Wins.md`)
+
+**Recommendation**:
+- Połącz Etap 5 z Milestone D acceptance criteria
+- Użyj istniejących test cases z `measure-debug-*` folders jako baseline
+
+## 🎯 Zmodyfikowana kolejność (moja propozycja)
+
+### **Etap 1: Jedno źródło prawdy** ✅ BEZ ZMIAN
+- `/estimate`: segment + polygon + measure (w tej kolejności)
+- `/configure`: używa `flow.measurement`, nie remeasure
+
+### **Etap 2: Polygon fallback** ✅ BEZ ZMIAN  
+- `fracPoly` fallback gdy maska zawodzi
+- Złagodzone progi `MASK_HEIGHT_RATIO_MIN/MAX`
+
+### **Etap 3 (UPROSZCZONY): Provider toggle**
+```text
+/api/measure(photoDataUri, polygon, provider?)
+  ├─► if provider === 'qwen' (default dla new flow):
+  │      base = QwenOppositeWall(photoDataUri)
+  │      meas = measureWithFallback({ base, polygon })
+  │
+  └─► else (googleai/openai):
+         meas = GenkitVLM(photoDataUri, polygon)
+```
+
+**NIE implementuj:**
+- ~~hybrid fallback (Qwen → VLM)~~ — to zostawić na Milestone D tuning
+- ~~noreref jako równoległy path~~ — to jest experimental branch, nie prod
+
+### **Etap 4 (ZMIĘKCZONE GATING): Progressive UX**
+```text
+/estimate
+  ├─► measurement ready → show modal + dimensions
+  ├─► segmentation pending → CTA disabled + "Analyzing wall..."
+  └─► both ready → CTA enabled
+```
+
+### **Etap 5: Measurement Diagnostics integration**
+- Measurement Diagnostics już istnieje (`apps/web/lib/measurement-observer.ts`)
+- Dodaj eksport CSV z Etapu 1-4 wyników
+- To będzie input do późniejszego benchmarku
+
+### **Milestone D (wcześniej Etap 5): Benchmark & Rollout**
+- Ground truth collection
+- Porównanie accuracy przed/po
+- Go/no-go review
+
+## 📋 Konkretne rekomendacje zmian w dokumencie
+
+### Do edycji w [Measurement-Pipeline-Overhaul.md](cci:7://file:///Users/mario/Repo/Curtain%20Wizard/project%20planning/Measurement-Pipeline-Overhaul.md:0:0-0:0):
+
+1. **Etap 1, line 67**: Zmień na:
+   ```
+   - pomiar odpala się w `startPolygonMeasurement()` z gotowym polygonem
+     (user rysuje polygon → measure button → /api/measure)
+   ```
+
+2. **Etap 3**: Usuń sekcję 3a (noreref), zostaw tylko:
+   - 3a: Qwen as default (wall×bbox)
+   - 3b: VLM providers (googleai/openai) as alternatives
+   - Hybrid fallback → defer to post-Milestone B
+
+3. **Etap 4, line 217**: Zmień na:
+   ```
+   - modal z wymiarami otwieramy gdy:
+     - measurement gotowy (polygon narysowany i zmierzony)
+   - CTA "Przejdź do konfiguratora":
+     - disabled dopóki segmentacja trwa
+   ```
+
+4. **Etap 5**: Zmień tytuł na "Diagnostics & Logging", przenieś benchmark do:
+   ```
+   ## 6. Milestone D — Benchmark & Rollout
+   (zawartość obecnego Etapu 5 + acceptance criteria)
+   ```
+
+## ✨ Podsumowanie
+
+**Czy to najlepsze rozwiązanie?** 
+
+👍 **TAK dla Etapów 1-2** — to są fundamentalne poprawki architektury
+
+⚠️ **CZĘŚCIOWO dla Etapów 3-5** — zbyt ambitne, konfliktują z istniejącym [NEW-FLOW-PLAN.md](cci:7://file:///Users/mario/Repo/Curtain%20Wizard/project%20planning/NEW-FLOW-PLAN.md:0:0-0:0)
+
+**Co zrobić:**
+1. Wdróż Etapy 1-2 jako priorytet (to są quick wins)
+2. Uprość Etap 3 do prostego provider switch
+3. Złagodź Etap 4 gating dla lepszego UX
+4. Przenieś benchmark do Milestone D (po implementacji Etapów 1-4)
+
+**Bottom line**: Plan jest solidny ale needs simplification. Zbyt wiele moving parts na raz = ryzyko. Lepiej iteracyjnie: implement core (1-2) → validate → extend (3-4) → benchmark (D).
+
+# Feedback 2
+
+Najważniejsze uwagi (wg wagi):
+
+project planning/Measurement-Pipeline-Overhaul.md:165-172,183-197: Plan zakłada Qwen jako prod‑default, co kłóci się z aktualnym kontraktem AI #1 (Genkit, default Gemini 2.x + OpenAI o3 fallback) i wymaganiem obsługi obu flow. Proponuję: zostawić AI1_PROVIDER domyślnie na Genkit/Gemini, Qwen za flagą/ENV z pełnym fallbackiem do Genkit, a noreref jako eksperyment; inaczej ryzykujemy rozjazd z resztą AI‑stacku i utratę pokrycia legacy flow.
+
+project planning/Measurement-Pipeline-Overhaul.md (lines 69-74): Cache signature::polyHash nie uwzględnia providera, wersji algorytmu ani trybu (legacy/new). Przy przełączaniu provider dostaniemy nie ten pomiar. Dopisz do klucza: provider, wersję modelu/algorytmu, wersję planu (np. v2), oraz flagę flow.
+
+project planning/Measurement-Pipeline-Overhaul.md (lines 82-92) vs 121-136: Nie jest jasno zdefiniowane, czy meas#P to wymiar ściany czy już przeskalowany na polygon. Jeśli API z polygonem zwraca już curtain‑height, a geometria ponownie mnoży przez fracWall/fracPoly, dostaniemy podwójną skalę. Trzeba spiąć kontrakt: API zwraca wall cm, geometria mnoży → albo API zwraca curtain cm, geometria ich nie skaluje.
+
+project planning/Measurement-Pipeline-Overhaul.md (lines 109-116): CURTAIN_BOX_HEIGHT_SOURCE='mask' musi być per new‑flow i za flagą (NEXT_PUBLIC_CONFIGURE_FLOW), żeby nie zepsuć legacy. Plan nie nazywa guardów ani rollbacku (np. env switch).
+
+project planning/Measurement-Pipeline-Overhaul.md (lines 216-244): Gating modala/CTA na segmentację może zablokować usera przy długich/nieudanych segmentacjach. Przyda się timeout + jasny fallback (np. retry/skip), żeby nie utknąć w loaderze; plan tego nie opisuje.
+
+project planning/Measurement-Pipeline-Overhaul.md (lines 262-289): Zbiór testowy ≥20 to mało i może nie pokryć wariantów (różne EXIF, dystans, głębia). Cel <10% będzie słabo uwiarygodniony; warto celować w 40–50 zdjęć, zrównoważone EXIF i różne typy okien, plus eksport pełnych logów (provider, prompt, EXIF, polygon, mask status).
+
+Dodatkowe pytania/do doprecyzowania:
+
+Jak traktujemy brak polygona przy wejściu prosto na /configure w new‑flow? Czy debugowy /api/measure może wtedy awaryjnie uzupełnić baseCm bez łamania „1 foto + 1 polygon”?
+Czy measureWithFallback (Qwen) ma korzystać z zapisanej maski, czy zawsze pracuje bez maski? Warto to ujednolicić z Etapem 2, żeby diagnostyki były spójne.
+Czy Measurement Diagnostics (ostatnie 40 odpowiedzi) zapisze provider/model/cache‑hit, by benchmark i prod miały wspólne metadane?
+Kierunek jest słuszny (1 źródło prawdy, mask+poly fallback, benchmarking), ale wymaga powyższych korekt, żeby nie rozjechać się z obecnym kontraktem AI1 i nie wprowadzić regresji w legacy flow. Next steps: ustal kontrakt meas#P, rozszerz klucz cache, dodać flagi/provider defaults zgodne z Genkit, oraz dopisać timeout/fallback UX dla segmentacji.
+
+# Feedback 3
+
+Dobra, jedziemy po kolei – co ma sens, co bym zostawił „na potem”, a co bym uprościł, zanim przekombinujesz.
+
+Będę się odnosił do etapów z Measurement-Pipeline-Overhaul.md i ogólnego planu z NEW-FLOW-PLAN.md.
+
+⸻
+
+1. „Jedno źródło prawdy” dla pomiaru (Etap 1) – ✅ RÓB
+
+To:
+
+1 foto + 1 polygon ⇒ 1 kanoniczny pomiar cm
+/estimate robi tylko segmentację, pomiar dopiero w startPolygonMeasurement() z polygonem, a /configure NIE odpala kolejnego /api/measure w prod.
+
+To jest absolutnie słuszne. Teraz masz klasyczną „fabrykę pomiarów” (meas#1/2/3) i brak jednego źródła prawdy, co mści się wszędzie: debug, UX, pricing. ￼
+
+Moja opinia:
+  • Ten etap to must-have, zanim dotkniesz czegokolwiek z maskami, EXIF, providerami.
+  • Bardzo dobry pomysł, żeby:
+  • /estimate → segmentuje i czeka na polygon,
+  • /api/measure(photo, polygon) → jedyny kanoniczny measurement,
+  • /configure → tylko konsumuje flow.measurement, debugowe /api/measure max. za flaga.
+
+Jedyne, czego bym pilnował:
+  • W logach wszędzie loguj measurementId/signature::polyHash, żebyś mógł śledzić jeden measurement end-to-end.
+  • Nie dawaj w prod żadnych „ukrytych” re-measure po stronie /configure, nawet jako „sprytny fallback” – to znowu rozmyje źródło prawdy.
+
+⸻
+
+2. Polygon + maska jako źródło wysokości (Etap 2) – ✅ ALE OSTROŻNIE Z PRIORYTETEM MASKI
+
+Plan:
+  • CURTAIN_BOX_HEIGHT_SOURCE='mask' dla nowego flow.
+  • Maską próbujesz doprecyzować wallTop/wallBottom, a jak maska jest słaba → fallback na bbox / polygon.
+
+To jest logiczne, ale:
+  1.  Maska jako „doprecyzowanie”, nie „prawda objawiona”
+Przy Twoim use-case (zasłony na płaskiej ścianie) polygon już daje sensowną geometrię. Maska ma:
+  • duży potencjał na edge-case’y (okna, kwiatki, lampy),
+  • noise z segmentation modeli,
+  • inny lifecycle (cache, timeouty, backend fallback). ￼
+Ja bym traktował maskę JAKO:
+  • soft hint: „jeśli spełnia zestaw twardych warunków (coverage, span, ratio) → popraw wysokość”,
+  • ale nigdy nie pozwalał jej skrócić wysokości do idiotycznych wartości bez silnych guardów.
+  2.  To, co masz w planie, jest sensowne:
+  • Ratio guard MASK_HEIGHT_RATIO_MIN/MAX + fallback do pełnego bboxa → bardzo dobra obrona przed zjechaną maską. ￼
+  • Fallback mask:fallback_poly_only kiedy maska pada → super, dopóki to jest jasno logowane w Measurement Diagnostics.
+  3.  Co bym uprościł / odłożył na później:
+  • Nie przesadzałbym z liczbą heurystyk na maskę na tym etapie.
+Najpierw:
+  • 1 prosty zestaw reguł (span, min coverage, ratio do bboxa),
+  • solidne logowanie kiedy maska jest odrzucona,
+  • benchmark czy maska realnie poprawia medianę / p90.
+  • Jeśli po benchmarku okaże się, że maska poprawia <2–3% przypadków, a psuje kolejne 5–10%, to bym ją zostawił głównie do wizualizacji, a nie do kluczowej geometrii.
+
+Podsumowując Etap 2:
+Tak – rób, ale psychicznie traktuj maskę jako bonus, a nie filar systemu.
+
+⸻
+
+3. Strategia providerów (noreref + Qwen + VLM) – ✅ KIERUNEK DOBRY, ZBYT WIELE OPCJI NA RAZ
+
+Masz ładnie rozpisane:
+  • Qwen jako kanoniczny estimator ściany + bbox-scaling dla polygona. ￼
+  • noreref jako lokalny no-reference z EXIF + segmentacja.
+  • OpenAI/Gemini jako VLM fallback/polygon-specialist.
+
+To architektonicznie ma sens, ale:
+
+3.1. Co jest bardzo sensowne
+  1.  Qwen wall-first + geometric rectangle
+  • Idealnie wpisuje się w Twoje założenia: on mierzy skalę ściany, Ty przeliczasz polygon na ułamek ściany. ￼
+  • To jest stabilne i łatwe do debugowania: cm ściany, bbox fraction, prosta matematyka.
+  2.  noreref jako eksperymentalny
+  • Bardzo dobrze, że sam sobie piszesz: „używać w trybie eksperymentalnym, dopóki benchmark nie pokaże <10% błędu”. ￼
+  • No-reference jest fajne na papierze, ale w realu jest mega wrażliwe na EXIF, FOV, kąt, dystans – dobrze, że nie chcesz na tym oprzeć prod.
+  3.  measureWithFallback() + confidence gating
+  • Pomysł, żeby provider zwracał confidence, a Ty masz centralne fallbacki → bardzo dobry wzorzec. ￼
+
+3.2. Co moim zdaniem nie ma sensu na tym etapie
+  1.  Zbyt dużo aktywnych providerów naraz w prod
+Jeśli realnie chcesz dowieźć stabilny produkt, to:
+  • Prod:
+  • 1 główny provider – Qwen (lub inny VLM), wall-first.
+  • Dev/QA:
+  • noreref, ewentualnie Gemini/OpenAI jako porównanie.
+Inaczej wyhodujesz sobie matrioszkę bugów:
+„u tego usera measurement przyszedł z Qwen, u tamtego z noreref, tu fallback na VLM, tam mask-fallback”… i debug zamienia się w ból istnienia.
+  2.  Cross-provider fallbacks w runtime
+Pomysł: „jeśli Qwen polygon fail → odpal VLM X, a potem geometry fallback” jest fajny akademicko, ale:
+  • komplikuje debug,
+  • zwiększa latency/spend,
+  • wprowadza dużo niewidocznej dla usera magii.
+Ja bym na tę chwilę:
+  • nie robił cross-providerów w prod,
+  • trzymał je tylko w benchmarku offline (Etap 5).
+
+3.3. Jak bym to uprościł
+
+Stack v1 (prod-ready):
+  • Provider domyślny: Qwen wall-first.
+  • Geometria: polygon bbox fractions + mask jako soft hint (Etap 2).
+  • noreref: tylko w panelu debug / benchmark CLI.
+  • Żadne cross-provider fallbacki w runtime.
+  • measureWithFallback() używane do:
+  • fallbacku geometrycznego (ściana → bbox),
+  • wewnątrz jednego providera (np. confidence < X → użyj samego wall × bbox).
+
+⸻
+
+4. UX i gating (Etap 4) – ✅ Z MAŁYM ALE
+
+Plan:
+  • Modal z wymiarami dopiero gdy:
+  • pomiar gotowy i
+  • segmentacja gotowa. ￼
+
+I CTA „Przejdź do konfiguratora” zablokowane do czasu aż oba będą gotowe.
+
+Co ma sens:
+  • To spina się z tym, że /configure potrzebuje i maski, i measurementu, żeby nie wejść w „półżywy” stan.
+  • To również pomaga uniknąć magii, że użytkownik widzi inne liczby w /estimate i inne w /configure.
+
+Moje „ale”:
+  • Jeśli segmentacja bywa zauważalnie wolniejsza niż measurement:
+  • Rozważyłbym:
+  • wymiary możesz pokazać od razu po measurement,
+  • ale CTA „Dalej” odblokowujesz dopiero, gdy segmentacja dowiezie (wyjaśniając w UI „ładowanie inteligentnego podglądu zasłon” itd.).
+  • Daje to wrażenie, że system reaguje szybciej, zamiast „nic się nie dzieje, bo czekamy na wszystko”.
+
+To nie jest błąd, tylko kwestia wrażeń z UX. Jeśli czasy inferencji są OK, Twój pierwotny plan też przejdzie.
+
+⸻
+
+5. Benchmark i QA (Etap 5) – ✅ MUST-HAVE, ZROBIONE DOBRZE
+
+Pomysł:
+  • Zbiór testowy ≥20 fot z ground truth + polygon,
+  • odpalanie /api/measure z różnymi providerami i liczenie median/p90 błędu,
+  • wybór domyślnego providera na podstawie liczb, nie przeczucia.
+
+To jest dokładnie to, co powinieneś robić. Jedyne, co dorzucę:
+  • Cel typu „<10% błędu dla 85–90% zdjęć” – masz już w planie, super. ￼
+  • Zadbaj, żeby dataset miał:
+  • różne ogniskowe,
+  • różne wysokości zawieszenia zasłony,
+  • różne perspektywy (lekko z boku, lekko z góry, etc.),
+  • fotki „brudne” (rośliny, krzesła, grzejnik).
+
+Bez tego wytrenujesz pipeline na idealnych zdjęciach i zderzysz się ze ścianą w realu (haha).
+
+⸻
+
+6. Curtain-first flow z NEW-FLOW-PLAN.md – ✅ TRAFIONE ZAŁOŻENIA
+
+Główne zasady:
+  • „Single geometry” – polygon usera jest jedyną prawdą o curtain boxie w całym kodzie. ￼
+  • Najpierw dowieźć MeasurementService (Milestone A), dopiero potem UI-churn.
+  • Feature flag NEXT_PUBLIC_CONFIGURE_FLOW=legacy|new.
+  • /configure nie startuje nowego flow bez pełnego pakietu {mask, polygon, measurement}.
+
+To wszystko jest bardzo zdrowe produktowo i technicznie.
+To, co już masz zrobione (Qwen wall→rect scaling + geometry guardy + Diagnostics) jest spójne z tym planem.
+
+Jedyne potencjalne „overkill” na teraz:
+  • Bardzo rozbudowany risk register + analityka + multi-flow offline restore – to jest świetne, ale jeśli masz ograniczony czas, priorytetyzuj:
+  1.  Jedno źródło prawdy (Etap 1),
+  2.  Stabilny provider (Qwen) + prosty geometry fallback (Etap 3),
+  3.  Benchmark (Etap 5),
+  4.  Dopiero potem finezje UX/analityczne.
+
+⸻
+
+7. Co bym zrobił w jakiej kolejności (konkretny plan)
+
+Jeśli miałbym to poukładać dla Ciebie praktycznie:
+  1.  Etap 1 – jedyny measurement
+  • Wyłączyć pomiar w startAnalysis().
+  • Upewnić się, że /configure nigdy nie odpala /api/measure, jeśli ma flow.measurement.
+  2.  Provider stack v1:
+  • AI1_PROVIDER=qwen jako domyślny.
+  • noreref tylko w debug i benchmark CLI.
+  • W measureWithFallback() tylko:
+  • wall → bbox geometria,
+  • confidence-fallback w obrębie jednego providera.
+  3.  Maska (Etap 2) – wersja minimum:
+  • Proste ratio guard + span guard,
+  • fallback do polygon bbox,
+  • logowanie ostrzeżeń w Diagnostics.
+  4.  UX gating (Etap 4):
+  • Modal po measurement,
+  • CTA „Dalej” odblokowane, gdy segmentacja gotowa (i jasny loader, czemu czekamy).
+  5.  Benchmark (Etap 5):
+  • 20+ fot, pomiary vs Qwen, noreref,
+  • na tej podstawie potwierdzić, że Qwen zostaje main.
+
+⸻
+

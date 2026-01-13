@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "curtain-wizard-monorepo",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm -ws run build",
+    "dev": "npm -w apps/web run dev",
+    "dev:phone": "npm -w apps/web run dev -- -H 0.0.0.0",
+    "lint": "npm -ws run lint --if-present",
+    "generate:tokens": "npm -w packages/ui run generate:tokens",
+    "check:tokens": "node scripts/check-tokens.mjs",
+    "storybook:ui": "npm -w packages/ui run storybook",
+    "test:catalog": "tsx --test packages/core/tests/catalog-mock.test.ts",
+    "test:core": "npm --workspace=@curtain-wizard/core run test -- tests/measure-fallback.test.ts",
+    "start:seg": "node scripts/seg-start.mjs",
+    "seg:venv:setup": "node scripts/seg-venv-setup.mjs",
+    "seg:venv:start": "node scripts/seg-venv-start.mjs",
+    "seg:venv:clean": "node scripts/seg-venv-clean.mjs",
+    "seg:venv:install": "node scripts/seg-venv-install.mjs",
+    "check:status": "node scripts/check-status.mjs",
+    "test:seg": "node scripts/test-seg.mjs",
+    "test:measure": "node scripts/test-measure.mjs",
+    "test:cart": "tsx scripts/test-cart-payload.mjs",
+    "stress:seg": "node scripts/stress-seg.mjs",
+    "ui:save": "node scripts/save-ui-palette.mjs",
+    "textures:mock": "node scripts/generate-mock-artist-textures.mjs"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "canvas": "^3.2.0",
+    "pngjs": "^7.0.0",
+    "tsx": "^4.20.5"
+  },
+  "overrides": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.7",
+    "@ladle/react": {
+      "@types/react": "18.3.12"
+    },
+    "@mdx-js/react": {
+      "@types/react": "18.3.12"
+    }
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0",
+    "oauth-1.0a": "^2.2.6"
+  }
+}

@@ -1,0 +1,202 @@
+"use client";
+
+import React, { memo } from 'react';
+import { cn } from '@/lib/utils';
+import { HeroSurface } from '@/app/configure/components/HeroSurface';
+import type { TranslateFn } from '@/app/configure/types';
+
+export type CurtainPhotoHeroProps = {
+  className?: string;
+} & Record<string, any>;
+
+export const CurtainPhotoHero = memo(function CurtainPhotoHero(props: CurtainPhotoHeroProps) {
+  const {
+    className,
+    isMobile,
+    heroDockedDesktop,
+    dropRef,
+    onDrop,
+    onPaste,
+    MOBILE_FIRST_TEST,
+    dragActive,
+    previewUrl,
+    t,
+    MAX_MB,
+    curtainHeroRef,
+    imgRef,
+    overlayRef,
+    wallBoxRef,
+    fullscreenImgRef,
+    phase,
+    wallMaskUrl,
+    clipPoly,
+    wallBoxPct,
+    segments,
+    imgSize,
+    texOrient,
+    lightingEnabled,
+    LIGHTING_MODE,
+    lighting,
+    LIGHTING_OPACITY,
+    textureUrl,
+    getRenderableUrl,
+    texScale,
+    texOpacity,
+    hoverTextureUrl,
+    crossfadeUrl,
+    crossfadeActive,
+    USE_CANVAS_RENDERER,
+    selectedFabric,
+    selectedChildItem,
+    selectedPleatId,
+    renderPipeline,
+    canvasRenderParams,
+    segDrag,
+    DEBUG_UI_ENABLED,
+    wallBoxPixels,
+    boxHover,
+    setBoxHover,
+    boxDrag,
+    setBoxDrag,
+    setSegDrag,
+    setDragIx,
+    dragIx,
+    corners,
+    dims,
+    formatNumber,
+    clampNotice,
+    stitchNoticeMessage,
+    stitchPositionsFromQuote,
+    stitchWidthsPerSegment,
+    stitchActiveFabric,
+    effectiveStitchWidthCm,
+    stitchLineBackground,
+    stitchLineOpacity,
+    stitchLinesVisible,
+    triggerStitchNotice,
+    STITCH_LINE_HITBOX_PX,
+    STITCH_LINE_WIDTH_PX,
+    materialReuseActive,
+    markPicks,
+    setMarkPicks,
+    setCorners,
+    markNormalizedRef,
+    setPhase,
+    markDragIx,
+    setMarkDragIx,
+    maybeSnap,
+    notifyClamp,
+    maxCurtainHeightCm,
+    baseBoxRatio,
+    baseCm,
+    topMidPct,
+    showMask,
+    maskUrl,
+    progress,
+    USE_CURTAIN_FIRST_FLOW,
+    curtainMeasureState,
+    curtainMeasureError,
+    readyPxPts,
+    isFullscreen,
+    setIsFullscreen,
+    screenshotCanvasRef,
+    onCurtainPainted,
+  } = props;
+
+  // Pure hero surface; sticky positioning handled by parent
+  return (
+    <div className={cn('flex w-full flex-col items-center gap-4', className)}>
+      <HeroSurface
+            isMobile={isMobile}
+            heroDockedDesktop={heroDockedDesktop}
+        dropRef={dropRef}
+        onDrop={onDrop}
+        onPaste={onPaste}
+        MOBILE_FIRST_TEST={MOBILE_FIRST_TEST}
+        dragActive={dragActive}
+        previewUrl={previewUrl}
+        t={t}
+        MAX_MB={MAX_MB}
+        curtainHeroRef={curtainHeroRef}
+        imgRef={imgRef}
+        phase={phase}
+        overlayRef={overlayRef}
+        wallMaskUrl={wallMaskUrl}
+        clipPoly={clipPoly || null}
+        wallBoxPct={wallBoxPct}
+        wallBoxRef={wallBoxRef}
+        segments={segments}
+        imgSize={imgSize}
+        texOrient={texOrient}
+        lightingEnabled={lightingEnabled}
+        LIGHTING_MODE={LIGHTING_MODE}
+        lighting={lighting}
+        LIGHTING_OPACITY={LIGHTING_OPACITY}
+        textureUrl={textureUrl}
+        getRenderableUrl={getRenderableUrl}
+        texScale={texScale}
+        texOpacity={texOpacity}
+        hoverTextureUrl={hoverTextureUrl}
+        crossfadeUrl={crossfadeUrl}
+        crossfadeActive={crossfadeActive}
+        USE_CANVAS_RENDERER={USE_CANVAS_RENDERER}
+        selectedFabric={selectedFabric}
+        selectedChildItem={selectedChildItem}
+        selectedPleatId={selectedPleatId}
+        renderPipeline={renderPipeline}
+        canvasRenderParams={canvasRenderParams}
+        segDrag={segDrag}
+        DEBUG_UI_ENABLED={DEBUG_UI_ENABLED}
+        wallBoxPixels={wallBoxPixels}
+        boxHover={boxHover}
+        setBoxHover={setBoxHover}
+        boxDrag={boxDrag}
+        setBoxDrag={setBoxDrag}
+        setSegDrag={setSegDrag}
+        setDragIx={setDragIx}
+        dragIx={dragIx}
+        corners={corners}
+        dims={dims}
+        formatNumber={formatNumber}
+        clampNotice={clampNotice}
+        stitchNoticeMessage={stitchNoticeMessage}
+        stitchPositionsFromQuote={stitchPositionsFromQuote}
+        stitchWidthsPerSegment={stitchWidthsPerSegment}
+        stitchActiveFabric={stitchActiveFabric}
+        effectiveStitchWidthCm={effectiveStitchWidthCm}
+        stitchLineBackground={stitchLineBackground}
+        stitchLineOpacity={stitchLineOpacity}
+        stitchLinesVisible={stitchLinesVisible}
+        triggerStitchNotice={triggerStitchNotice}
+        STITCH_LINE_HITBOX_PX={STITCH_LINE_HITBOX_PX}
+        STITCH_LINE_WIDTH_PX={STITCH_LINE_WIDTH_PX}
+        materialReuseActive={materialReuseActive}
+        markPicks={markPicks}
+        setMarkPicks={setMarkPicks}
+        setCorners={setCorners}
+        markNormalizedRef={markNormalizedRef}
+        setPhase={setPhase}
+        markDragIx={markDragIx}
+        setMarkDragIx={setMarkDragIx}
+        maybeSnap={maybeSnap}
+        notifyClamp={notifyClamp}
+        maxCurtainHeightCm={maxCurtainHeightCm}
+        baseBoxRatio={baseBoxRatio}
+        baseCm={baseCm}
+        topMidPct={topMidPct}
+        showMask={showMask}
+        maskUrl={maskUrl}
+        progress={progress}
+        USE_CURTAIN_FIRST_FLOW={USE_CURTAIN_FIRST_FLOW}
+        curtainMeasureState={curtainMeasureState}
+        curtainMeasureError={curtainMeasureError}
+        readyPxPts={readyPxPts}
+        isFullscreen={isFullscreen}
+        setIsFullscreen={setIsFullscreen}
+        fullscreenImgRef={fullscreenImgRef}
+        screenshotCanvasRef={screenshotCanvasRef}
+        onCurtainPainted={onCurtainPainted}
+      />
+    </div>
+  );
+});

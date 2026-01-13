@@ -1,0 +1,78 @@
+{
+  "top-right": [
+    "apps/web/app/layout.tsx"
+  ],
+  "use client": [
+    "apps/web/components/CornerSelector.tsx",
+    "apps/web/app/debug/seg/page.tsx",
+    "apps/web/app/estimate/page.tsx",
+    "apps/web/app/configure/page.tsx"
+  ],
+  "top": [
+    "apps/web/app/configure/page.tsx"
+  ],
+  "file": [
+    "apps/web/app/debug/seg/page.tsx",
+    "apps/web/app/estimate/page.tsx",
+    "apps/web/app/configure/page.tsx"
+  ],
+  "image/*": [
+    "apps/web/app/debug/seg/page.tsx",
+    "apps/web/app/estimate/page.tsx",
+    "apps/web/app/configure/page.tsx"
+  ],
+  "environment": [
+    "apps/web/app/estimate/page.tsx",
+    "apps/web/app/configure/page.tsx"
+  ],
+  "none": [
+    "apps/web/components/CornerSelector.tsx",
+    "apps/web/app/configure/page.tsx"
+  ],
+  "#4a67ff": [
+    "apps/web/components/CornerSelector.tsx",
+    "apps/web/app/configure/page.tsx"
+  ],
+  "#fff": [
+    "apps/web/components/CornerSelector.tsx",
+    "apps/web/app/configure/page.tsx"
+  ],
+  "range": [
+    "apps/web/app/configure/page.tsx"
+  ],
+  " max=": [
+    "apps/web/app/configure/page.tsx"
+  ],
+  "checkbox": [
+    "apps/web/app/debug/seg/page.tsx",
+    "apps/web/app/configure/page.tsx"
+  ],
+  "button": [
+    "apps/web/app/estimate/page.tsx",
+    "apps/web/app/configure/page.tsx"
+  ],
+  "_blank": [
+    "apps/web/app/configure/page.tsx"
+  ],
+  "noreferrer": [
+    "apps/web/app/configure/page.tsx"
+  ],
+  "Design consultation booking": [
+    "apps/web/app/configure/page.tsx"
+  ],
+  "Failed to read file": [
+    "apps/web/app/estimate/page.tsx"
+  ],
+  "image/": [
+    "apps/web/app/estimate/page.tsx"
+  ],
+  "googleai": [
+    "apps/web/app/estimate/page.tsx"
+  ],
+  "openai": [
+    "apps/web/app/estimate/page.tsx"
+  ],
+  "preview": [
+    "apps/web/app/estimate/page.tsx"
+  ]
+}

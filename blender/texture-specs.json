@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "version": "2.0.0",
+    "date": "2025-11-01",
+    "resolutionPx": [1024, 2048],
+    "physicalSizeM": [1.0, 2.0],
+    "maps": {
+      "pleatRamp": { "bitDepth": 16, "colorSpace": "Linear" },
+      "occlusion": { "bitDepth": 16, "colorSpace": "Linear" },
+      "translucency": { "bitDepth": 16, "colorSpace": "Linear" },
+      "normal": { "bitDepth": 8, "colorSpace": "sRGB (Tangent OpenGL)" }
+    }
+  },
+  "families": {
+    "wave-drape": {
+      "materials": ["linen-heavy", "blackout"],
+      "pleatsPerTile": 9,
+      "headerBandPct": 15,
+      "textureScalePx": 180,
+      "translucencyHint": "Low light pass, deep trough shadows",
+      "variantCount": 1
+    },
+    "wave-sheer": {
+      "materials": ["sheer", "voile"],
+      "pleatsPerTile": 9,
+      "headerBandPct": 12,
+      "textureScalePx": 180,
+      "translucencyHint": "High light pass, softened ramp",
+      "variantCount": 1
+    },
+    "flex": {
+      "materials": ["linen", "cotton"],
+      "pleatsPerTile": 9,
+      "headerBandPct": 12,
+      "transitionBandPct": 8,
+      "textureScalePx": 200,
+      "notes": "Sharp X header, cylindrical belly",
+      "variantCount": 1
+    },
+    "double-flex": {
+      "materials": ["velvet", "formal"],
+      "pleatsPerTile": 17,
+      "headerBandPct": 10,
+      "textureScalePx": 90,
+      "notes": "Dual layer, darkest AO, minimal variation",
+      "variantCount": 1
+    }
+  },
+  "qa": {
+    "tileability": "Offset test 50% on X – no seams",
+    "histogramRange": [0.06, 0.94],
+    "normalCheck": "Green channel positive (OpenGL), overall light blue",
+    "translucencyCheck": {
+      "wave-sheer": "Should be visibly brighter than wave-drape",
+      "double-flex": "Should be the darkest of all families"
+    }
+  }
+}

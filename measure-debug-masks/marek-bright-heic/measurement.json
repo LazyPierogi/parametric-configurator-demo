@@ -1,0 +1,18 @@
+{
+  "file": "marek_bright.HEIC",
+  "source": "/Users/mario/Repo/Curtain Wizard/apps/web/public/originals/marek_bright.HEIC",
+  "provider": "qwen",
+  "mode": null,
+  "wallWidthCm": 210,
+  "wallHeightCm": 130,
+  "pxPerCm": null,
+  "axisEstimate": null,
+  "rectifiedBoundsCm": null,
+  "trimPercentile": null,
+  "sheet": null,
+  "a4Mask": null,
+  "clamp": null,
+  "a4Candidates": null,
+  "confidencePct": null,
+  "warnings": null
+}

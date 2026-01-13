@@ -1,0 +1,655 @@
+@import '../../../packages/ui/tokens/generated/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* CSS Variables for dynamic theming */
+  :root {
+    /* ==========================================
+       PALETTE A: HAVINIC HARMONY
+       Purpose: Storefront integration (iframe child)
+       Mood: Clean, tactile, slightly warm
+       ========================================== */
+    --havinic-bg-base: var(--cw-color-palette-havinic-bg-base);           /* Linen White - gentle off-white */
+    --havinic-text-primary: var(--cw-color-palette-havinic-text-primary);      /* Graphite - deep gray, never harsh black */
+    --havinic-text-secondary: var(--cw-color-palette-havinic-text-secondary);    /* Warm Slate - softer for body text */
+    --havinic-accent-primary: var(--cw-color-palette-havinic-accent-primary);    /* Honey Oak - warm CTA highlights */
+    --havinic-accent-secondary: var(--cw-color-palette-havinic-accent-secondary);  /* Soft Taupe - hover/focus states */
+    --havinic-border: var(--cw-color-palette-havinic-border);            /* Mist Gray - minimal dividers */
+    --havinic-success: var(--cw-color-palette-havinic-success);           /* Forest Tint - calm green */
+    --havinic-error: var(--cw-color-palette-havinic-error);             /* Clay Red - muted error tone */
+    --havinic-warning: var(--cw-color-palette-havinic-warning);           /* Warm amber for warnings */
+    
+    /* ==========================================
+       PALETTE B: CURTAIN WIZARD SIGNATURE
+       Purpose: Standalone app identity
+       Mood: Minimal, airy, premium (liquid glass)
+       ========================================== */
+    --cw-sig-bg-base: var(--cw-color-palette-signature-bg-base);                    /* Frost White - frosted surface */
+    --cw-sig-glass-surface: var(--cw-color-palette-signature-glass-surface); /* Translucent Ice - glass panels */
+    --cw-sig-glass-rgb: var(--cw-color-palette-signature-glass-rgb);            /* RGB for calculations */
+    --cw-sig-glass-alpha: var(--cw-color-palette-signature-glass-alpha);                   /* Glass opacity */
+    --cw-sig-text-primary: var(--cw-color-palette-signature-text-primary);               /* Deep Ink - balanced contrast */
+    --cw-sig-text-secondary: var(--cw-color-palette-signature-text-secondary);             /* Cloud Gray - subdued descriptions */
+    --cw-sig-accent-sage: var(--cw-color-palette-signature-accent-sage);                /* Sage Mist - calm botanical tone */
+    --cw-sig-accent-lilac: var(--cw-color-palette-signature-accent-lilac);               /* Lily Lilac - delicate premium note */
+    --cw-sig-accent-gradient: var(--cw-color-palette-signature-accent-gradient); /* Morning Light gradient */
+    --cw-sig-error: var(--cw-color-palette-signature-error);                      /* Blush Red - light friendly warning */
+    --cw-sig-success: var(--cw-color-palette-signature-success);                    /* Dew Green - positive unobtrusive */
+    
+    /* ==========================================
+       ACTIVE PALETTE TOKENS (Runtime Semantic)
+       These are set by PaletteContext based on active palette
+       Components should use these for palette-aware styling
+       ========================================== */
+    --active-bg-base: var(--cw-color-semantic-active-bg-base);              /* Default to Signature */
+    --active-text-primary: var(--cw-color-semantic-active-text-primary);
+    --active-text-secondary: var(--cw-color-semantic-active-text-secondary);
+    --active-accent-primary: var(--cw-color-semantic-active-accent-primary);
+    --active-accent-secondary: var(--cw-color-semantic-active-accent-secondary);
+    --active-border: var(--cw-color-semantic-active-border);
+    --active-success: var(--cw-color-semantic-active-success);
+    --active-error: var(--cw-color-semantic-active-error);
+    --active-warning: var(--cw-color-semantic-active-warning);
+    
+    /* ==========================================
+       TYPOGRAPHY TOKENS
+       Based on SF Pro / Inter - clean, modern, neutral
+       ========================================== */
+    --font-primary: var(--font-outfit), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --font-heading: var(--font-dm-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --font-size-title: 22px;         /* Title / Header (mobile: 22-26px) */
+    --font-size-section: 18px;       /* Section Head (mobile: 18-20px) */
+    --font-size-body: 16px;          /* Body text (mobile: 15-16px) */
+    --font-size-label: 14px;         /* Labels / Buttons */
+    --font-size-caption: 13px;       /* Caption / Hints */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --line-height-title: 1.3;        /* 130% */
+    --line-height-section: 1.35;     /* 135% */
+    --line-height-body: 1.5;         /* 150% */
+    --line-height-label: 1.4;        /* 140% */
+    
+    /* ==========================================
+       BLUR TOKENS
+       Inspired by "light through fabric" rule
+       ========================================== */
+    --blur-light: var(--cw-blur-light);              /* Subtle diffusion */
+    --blur-medium: var(--cw-blur-medium);             /* Standard glass panels */
+    --blur-heavy: var(--cw-blur-heavy);              /* Deep background scrim */
+    --blur-glass-scrim: var(--cw-blur-glass-scrim);        /* Modal backdrop */
+    --blur-signature: var(--cw-blur-signature);          /* CW Signature default (18-24px range) */
+    
+    /* ==========================================
+       SHADOW TOKENS (REFINED)
+       Subtle and physical - like sunlight through fabric
+       ========================================== */
+    --shadow-low: var(--cw-shadow-low);      /* Floating buttons */
+    --shadow-medium: var(--cw-shadow-medium);  /* Panels/cards */
+    --shadow-high: var(--cw-shadow-high);   /* Modals */
+    --shadow-glass: var(--cw-shadow-glass); /* Signature glass accent */
+    
+    /* ==========================================
+       LEGACY TOKENS (kept for backward compat)
+       ========================================== */
+    --color-primary: #4a67ff;
+    --color-primary-dark: #1f2b6c;
+    --color-primary-light: #eef2ff;
+    --radius-default: var(--cw-radius-base);
+    --shadow-default: 0 6px 16px rgba(15, 23, 42, 0.08);
+    --cw-overlay-gradient-light: linear-gradient(135deg, rgba(2,6,23,0.25) 0%, rgba(2,6,23,0.15) 35%, rgba(2,6,23,0.06) 100%);
+    --cw-overlay-gradient-medium: linear-gradient(135deg, rgba(2,6,23,0.45) 0%, rgba(2,6,23,0.25) 35%, rgba(2,6,23,0.12) 100%);
+    --cw-overlay-gradient-dark: linear-gradient(135deg, rgba(2,6,23,0.60) 0%, rgba(2,6,23,0.40) 35%, rgba(2,6,23,0.20) 100%);
+    --cw-surface-glass-rgb: var(--cw-color-palette-signature-glass-rgb);
+    --cw-overlay-scrim: rgba(2, 6, 23, 0.65);
+    --cw-overlay-scrim-strong: rgba(24, 27, 45, 0.82);
+    --cw-config-panel-bg: #f5f7ff;
+    --cw-config-panel-border: #f1f1f1;
+    --cw-config-panel-shadow: 0 12px 30px rgba(57, 88, 209, 0.12);
+    --cw-overlay-toast-bg: rgba(24, 27, 45, 0.82);
+    --cw-overlay-toast-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    --cw-highlight-stroke: rgba(139, 186, 139, 0.95);
+    --cw-highlight-fill: rgba(139, 186, 139, 0.15);
+    --cw-chip-hover-shadow: inset 0 0 0 2px rgba(168, 195, 161, 0.35);
+    --cw-chip-focus-shadow: 0 0 0 2px rgba(168, 195, 161, 0.2);
+    --cw-debug-handle-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    --cw-ring-rgb: var(--cw-surface-glass-rgb);
+    --cw-ring-opacity: 0.8;
+    --cw-handle-border-rgb: 0, 0, 0;
+    --cw-handle-border-opacity: 0.15;
+    --cw-handle-border: rgba(0, 0, 0, 0.15);
+    --cw-config-overlay-gradient: var(--cw-overlay-gradient-medium);
+    --cw-config-overlay-blur: 8px;
+    --cw-config-overlay-saturate: 140%;
+    --cw-config-glass-alpha: 0.55;
+    
+    /* Debug Handle Variables (can be overridden at runtime) */
+    --cw-handle-bg: #e5e7eb;
+    --cw-handle-opacity: 1;
+    --cw-wall-stroke: #e5e7eb;
+    --cw-wall-stroke-opacity: 1;
+    
+    /* Banner/Alert Color Tokens */
+    --info-bg: var(--cw-color-semantic-status-info-bg);
+    --info-border: var(--cw-color-semantic-status-info-border);
+    --info-text: var(--cw-color-semantic-status-info-text);
+    --warning-bg: var(--cw-color-semantic-status-warning-bg);
+    --warning-border: var(--cw-color-semantic-status-warning-border);
+    --warning-text: var(--cw-color-semantic-status-warning-text);
+    --error-bg: var(--cw-color-semantic-status-error-bg);
+    --error-border: var(--cw-color-semantic-status-error-border);
+    --error-text: var(--cw-color-semantic-status-error-text);
+    --success-bg: var(--cw-color-semantic-status-success-bg);
+    --success-border: var(--cw-color-semantic-status-success-border);
+    --success-text: var(--cw-color-semantic-status-success-text);
+    
+    /* ==========================================
+       MOBILE-FIRST LAYOUT SYSTEM (Task 1.4)
+       Viewport-aware dimensions with safe-area support
+       ========================================== */
+    /* Dynamic viewport units (iOS Safari compatible) */
+    --vh-full: 1vh;                         /* Fallback for older browsers */
+    --vh-safe: 1vh;                         /* Visual viewport (accounts for browser chrome) */
+    --vw-full: 1vw;
+    
+    /* Safe-area insets for iOS notch/home bar */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    
+    /* Layout zones for fit-to-height approach */
+    --top-bar-height: 3rem;                 /* 48px top bar (optional, can hide on mobile) */
+    --cta-height: 3.5rem;                   /* 56px sticky CTA button */
+    --panel-min-height: 20vh;               /* Collapsed bottom sheet */
+    --panel-max-height: 35vh;               /* Expanded bottom sheet */
+    --panel-current-height: var(--panel-min-height);
+    
+    /* Hero (photo) area calculations */
+    --available-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - var(--cta-height));
+    --hero-max-height: calc(var(--available-height) * 0.75);  /* 75% of available space */
+    --hero-desktop-width: 768px;
+    --hero-desktop-height: 576px;
+    --hero-frame-height: min(var(--hero-max-height), var(--hero-desktop-height));
+    
+    /* Full-screen mode overrides */
+    --fullscreen-hero-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 5vh);
+  }
+  
+  /* Modern viewport units support (dvh/svh for iOS Safari) */
+  @supports (height: 100dvh) {
+    :root {
+      --vh-full: 1dvh;
+      --vh-safe: 1svh;
+      --available-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - var(--cta-height));
+      --hero-max-height: calc(var(--available-height) * 0.75);
+      --hero-frame-height: min(var(--hero-max-height), var(--hero-desktop-height));
+      --fullscreen-hero-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 5vh);
+    }
+  }
+  
+  /* Base HTML/Body */
+  html {
+    @apply antialiased;
+    /* Prevent mobile overscroll/bounce on iOS */
+    overscroll-behavior: none;
+  }
+  
+  body {
+    @apply text-neutral-900;
+    /* Always show scrollbar to prevent layout shift */
+    overflow-y: scroll;
+    /* Prevent horizontal scroll globally - safe for sticky positioning */
+    overflow-x: hidden;
+    background-color: var(--active-bg-base);
+    transition: background-color 300ms ease;
+  }
+  
+  /* Typography Base Styles */
+  h1 {
+    @apply text-2xl font-semibold mb-2 font-heading;
+    color: var(--active-text-primary);
+  }
+  
+  h2 {
+    @apply text-xl font-semibold mb-2 font-heading;
+    color: var(--active-text-primary);
+  }
+  
+  h3 {
+    @apply text-lg font-semibold mb-2 font-heading;
+    color: var(--active-text-primary);
+  }
+  
+  h4 {
+    @apply text-base font-semibold mb-2 font-heading;
+    color: var(--active-text-primary);
+  }
+  
+  p {
+    @apply text-base mb-4;
+    color: var(--active-text-secondary);
+  }
+  
+  a {
+    @apply text-active-accent hover:underline transition-colors;
+  }
+
+  [data-cw-component="Button"],
+  [data-cw-component="Button"]:hover,
+  [data-cw-component="Button"]:active {
+    text-decoration: none !important;
+  }
+  
+  /* Form Elements */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="search"],
+  input[type="password"],
+  textarea,
+  select {
+    @apply px-3 py-2 border border-neutral-300 rounded-lg bg-white text-neutral-900;
+    @apply focus:outline-none focus:ring-2 focus:ring-active-accent focus:ring-opacity-50 focus:border-active-accent;
+    @apply disabled:bg-neutral-100 disabled:cursor-not-allowed disabled:text-neutral-500;
+    @apply transition-colors;
+  }
+  
+  input[type="checkbox"],
+  input[type="radio"] {
+    @apply w-4 h-4 text-active-accent border-neutral-300 rounded;
+    @apply focus:ring-2 focus:ring-active-accent focus:ring-opacity-50;
+    @apply cursor-pointer;
+  }
+  
+  /* Palette-aware slider + checkbox helpers */
+  .cw-slider {
+    @apply w-full cursor-pointer appearance-none;
+    height: 0.5rem;
+    background: transparent;
+  }
+
+  .cw-slider::-webkit-slider-runnable-track {
+    @apply h-2 rounded-full;
+    background: linear-gradient(
+      to right,
+      var(--active-accent-primary) 0%,
+      var(--active-accent-primary) var(--slider-progress, 0%),
+      rgba(209, 213, 219, 0.7) var(--slider-progress, 0%),
+      rgba(209, 213, 219, 0.7) 100%
+    );
+  }
+
+  .cw-slider::-moz-range-track {
+    @apply h-2 rounded-full;
+    background: linear-gradient(
+      to right,
+      var(--active-accent-primary) 0%,
+      var(--active-accent-primary) var(--slider-progress, 0%),
+      rgba(209, 213, 219, 0.7) var(--slider-progress, 0%),
+      rgba(209, 213, 219, 0.7) 100%
+    );
+  }
+
+  .cw-slider::-webkit-slider-thumb {
+    @apply appearance-none w-5 h-5 rounded-full cursor-pointer;
+    background-color: var(--active-accent-primary);
+    border: 2px solid color-mix(in srgb, var(--active-accent-primary) 80%, white 20%);
+    margin-top: -6px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.18);
+  }
+
+  .cw-slider::-moz-range-thumb {
+    @apply w-5 h-5 rounded-full border-2 cursor-pointer;
+    background-color: var(--active-accent-primary);
+    border-color: color-mix(in srgb, var(--active-accent-primary) 80%, white 20%);
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.18);
+  }
+
+  .cw-checkbox {
+    @apply h-5 w-5 rounded border border-active-border cursor-pointer transition-colors appearance-none;
+    background-color: var(--active-bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 70%;
+  }
+
+  .cw-checkbox:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--active-accent-primary) 60%, white 40%);
+    outline-offset: 1px;
+  }
+
+  .cw-checkbox:checked {
+    border-color: var(--active-accent-primary);
+    background-color: var(--active-accent-primary);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--active-accent-primary) 65%, white 35%);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 8.2l2.4 2.6L12 6' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+
+  /* Button Reset */
+  button {
+    @apply font-sans;
+  }
+
+  .cw-modal-scope,
+  .cw-modal-scope * {
+    box-sizing: border-box;
+  }
+
+  .cw-modal-scope button,
+  .cw-modal-scope input,
+  .cw-modal-scope select,
+  .cw-modal-scope textarea {
+    font: inherit;
+    line-height: 1.2;
+    letter-spacing: inherit;
+    text-transform: none;
+  }
+
+  .cw-modal-scope input,
+  .cw-modal-scope select,
+  .cw-modal-scope textarea {
+    display: block;
+    min-width: 0;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .cw-modal-scope input[type="text"],
+  .cw-modal-scope input[type="number"],
+  .cw-modal-scope input[type="email"],
+  .cw-modal-scope input[type="tel"],
+  .cw-modal-scope input[type="url"],
+  .cw-modal-scope input[type="search"],
+  .cw-modal-scope input[type="password"],
+  .cw-modal-scope textarea,
+  .cw-modal-scope select {
+    @apply px-3 py-2 border border-neutral-300 rounded-lg bg-white text-neutral-900;
+    @apply focus:outline-none focus:ring-2 focus:ring-active-accent focus:ring-opacity-50 focus:border-active-accent;
+    @apply disabled:bg-neutral-100 disabled:cursor-not-allowed disabled:text-neutral-500;
+    @apply transition-colors;
+  }
+  
+  /* Focus Visible for Accessibility
+     Swatch chips manage their own focus ring; exclude them from the global rule */
+  *:not([data-cw-variant="swatch"]):focus-visible {
+    @apply outline-none ring-2 ring-active-accent ring-opacity-50 ring-offset-2;
+  }
+  
+  /* Smooth scrolling */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+}
+
+@layer components {
+  /* Utility Layout Components */
+  .page-container {
+    @apply max-w-6xl mx-auto px-4 py-6;
+  }
+  
+  .page-container-narrow {
+    @apply max-w-4xl mx-auto px-4 py-6;
+  }
+
+  .cw-hero-shell {
+    width: min(100%, var(--hero-desktop-width));
+    max-width: var(--hero-desktop-width);
+  }
+
+  .cw-hero-stage {
+    max-height: var(--hero-frame-height);
+  }
+  
+  @media (min-width: 1024px) {
+    .cw-hero-shell {
+      width: var(--hero-desktop-width);
+    }
+  }
+  
+  .section {
+    @apply mb-8;
+  }
+  
+  .section-sm {
+    @apply mb-4;
+  }
+  
+  .section-lg {
+    @apply mb-12;
+  }
+
+  #main_content_outer>div>div {
+    background: #fafafb !important
+  }
+  
+  /* Card Component */
+  .card {
+    @apply rounded-lg p-4 shadow-sm;
+    background-color: var(--active-bg-base);
+    border: 1px solid var(--active-border);
+    transition: all 300ms ease;
+  }
+  
+  .card-hover {
+    @apply card transition-shadow hover:shadow-md;
+  }
+  
+  /* Panel Heading Style (from existing styles.ts) */
+  .panel-heading {
+    @apply text-xs font-bold uppercase tracking-wider text-neutral-600 mb-2;
+  }
+  
+  /* Summary Row (from existing styles.ts) */
+  .summary-row {
+    @apply flex justify-between items-baseline w-full gap-3 text-xs text-neutral-800 mb-1.5;
+  }
+  
+  /* Spinner Animation */
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes cwspin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes cwbar {
+    0% {
+      transform: translateX(-60%);
+    }
+    50% {
+      transform: translateX(-10%);
+    }
+    100% {
+      transform: translateX(120%);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .spinner {
+    @apply inline-block w-9 h-9 rounded-full border-4 border-white/50 border-t-white;
+    animation: spin 0.6s linear infinite;
+  }
+  
+  /* Progress Bar */
+  .progress-bar-outer {
+    @apply w-3/5 max-w-[260px] h-1.5 rounded-full bg-white/25 overflow-hidden mt-3;
+  }
+  
+  .progress-bar-inner {
+    @apply h-full rounded-full bg-white transition-all duration-200;
+  }
+  
+  /* Debug Handle Styles */
+  /* On mobile: hitbox is large (1.8x) but visual element is small (centered ::after pseudo-element) */
+  .cw-handle {
+    position: relative;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    opacity: var(--cw-handle-opacity, 1);
+    transition: box-shadow 120ms ease, transform 120ms ease;
+  }
+  
+  /* Visual element via ::after - centered within the hitbox */
+  .cw-handle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* On mobile: visual is 50% of hitbox size; on desktop: 100% */
+    width: 50%;
+    height: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--cw-handle-bg);
+    border: 1px solid var(--cw-handle-border);
+    box-shadow: var(--cw-debug-handle-shadow);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  
+  /* Desktop: visual element fills the hitbox */
+  @media (min-width: 1024px) {
+    .cw-handle::after {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .cw-handle:hover::after {
+    box-shadow: 0 0 0 3px rgba(var(--cw-ring-rgb), var(--cw-ring-opacity)), var(--cw-debug-handle-shadow);
+  }
+  
+  .cw-handle:focus-visible::after {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--cw-ring-rgb), var(--cw-ring-opacity)), var(--cw-debug-handle-shadow);
+  }
+  
+  .cw-handle--grab {
+    cursor: grab;
+  }
+  
+  .cw-handle--move {
+    cursor: move;
+  }
+  
+  .cw-handle--ew {
+    cursor: ew-resize;
+  }
+}
+
+@layer utilities {
+  /* Custom Utilities */
+  .transition-all-fast {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .transition-all-smooth {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ==========================================
+   VIEW TRANSITIONS API
+   Smooth cross-fade between pages (no white flash)
+   ========================================== */
+@supports (view-transition-name: none) {
+  /* Prevent white flash during navigation */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 300ms;
+    animation-timing-function: ease-in-out;
+  }
+  
+  /* Cross-fade animation */
+  ::view-transition-old(root) {
+    animation-name: fadeOut;
+  }
+  
+  ::view-transition-new(root) {
+    animation-name: fadeIn;
+  }
+  
+  @keyframes fadeOut {
+    to {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
+/* Ensure consistent background during page transitions */
+html {
+  background-color: var(--cw-sig-bg-base);
+}
+
+body {
+  background: linear-gradient(180deg, 
+    var(--cw-config-overlay-gradient-start) 0%, 
+    var(--cw-config-overlay-gradient-end) 100%
+  );
+  min-height: 100vh;
+}
+
+/* ==========================================
+   OVERLAY UTILITIES — FROSTED (STANDARD)
+   Warm gradient + subtle blur, matches /estimate
+   ========================================== */
+.cw-frosted-overlay {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.55) 100%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Slightly stronger variant if needed for busy backgrounds */
+.cw-frosted-overlay-strong {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.65) 100%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}

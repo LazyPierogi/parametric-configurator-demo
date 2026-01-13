@@ -1,0 +1,21 @@
+{
+  "name": "@curtain-wizard/ui",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "generate:tokens": "tsx ./scripts/generate-tokens.ts",
+    "lint": "tsc --noEmit",
+    "storybook": "ladle"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <20.0.0",
+    "react-dom": ">=18.2.0 <20.0.0"
+  },
+  "devDependencies": {
+    "@ladle/react": "^5.1.1"
+  }
+}

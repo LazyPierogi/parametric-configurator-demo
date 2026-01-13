@@ -1,0 +1,22 @@
+{
+  "file": "sciana.jpg",
+  "source": "/Users/mario/Repo/Curtain Wizard/public/originals/sciana.jpg",
+  "provider": "noreref",
+  "mode": null,
+  "wallWidthCm": 1473.8,
+  "wallHeightCm": 386.5,
+  "pxPerCm": null,
+  "axisEstimate": null,
+  "rectifiedBoundsCm": null,
+  "trimPercentile": null,
+  "sheet": null,
+  "a4Mask": null,
+  "clamp": null,
+  "a4Candidates": null,
+  "confidencePct": 30,
+  "warnings": [
+    "Floor and ceiling bands overlapped; using gradient fallback.",
+    "Wall width 1474cm outside typical range (150-900cm)",
+    "Wall mask touches image edges - measurement may include side walls"
+  ]
+}
